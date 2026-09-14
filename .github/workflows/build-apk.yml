@@ -20,12 +20,8 @@ jobs:
           rm -rf app
           mkdir app
           unzip -q zaynab_book_flutter_app.zip -d app
-          if [ -f app/pubspec.yaml ]; then
-            echo "PROJECT_DIR=app" >> "$GITHUB_ENV"
-          else
-            PROJECT_DIR=$(dirname "$(find app -name pubspec.yaml -print -quit)")
-            echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
-          fi
+          PROJECT_DIR=$(dirname "$(find app -name pubspec.yaml -print -quit)")
+          echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -34,14 +30,10 @@ jobs:
           cache: true
 
       - name: Install dependencies
-        run: |
-          cd "$PROJECT_DIR"
-          flutter pub get
+        run: cd "$PROJECT_DIR" && flutter pub get
 
       - name: Build APK
-        run: |
-          cd "$PROJECT_DIR"
-          flutter build apk --release
+        run: cd "$PROJECT_DIR" && flutter build apk --release
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
